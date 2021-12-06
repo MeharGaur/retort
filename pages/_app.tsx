@@ -1,8 +1,14 @@
-import '../styles/globals.css'
+import '../styles/global.scss'
 import type { AppProps } from 'next/app'
 
-function MyApp({ Component, pageProps }: AppProps) {
+if (process.browser) {
+    // Initialize reflow globally
+    // https://github.com/MeharGaur/reflow
+    import('reflow-breakpoints')
+}
+
+function Retort ({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
 }
 
-export default MyApp
+export default Retort

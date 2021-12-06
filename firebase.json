@@ -1,0 +1,11 @@
+{
+    "hosting": {
+        "site": "retort",
+        "public": "out",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ]
+    }
+}
