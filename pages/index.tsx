@@ -6,6 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { useEffect, useRef } from 'react'
 
 import sortingAlgorithms from '../lib/sorting-algorithms'
+import Navigation from '../lib/components/Navigation'
 
 
 // *****TODO: put data-sorting-algorithm="" attribute on nav items
@@ -128,28 +129,7 @@ function Home () {
                 <link rel="icon" href="/favicon.ico" /> */}
             </Head>
 
-            <nav>
-                <ul>
-                    <li>
-                        Bubble Sort
-                    </li>
-                    <li>
-                        Insertion Sort
-                    </li>
-                    <li>
-                        Merge Sort
-                    </li>
-                    <li>
-                        Quick Sort
-                    </li>
-                    <li>
-                        Radix Sort
-                    </li>
-                    <li>
-                        Selection Sort
-                    </li>
-                </ul>
-            </nav>
+            <Navigation />
 
             <canvas ref={canvasRef} ></canvas>
 
