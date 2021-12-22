@@ -23,3 +23,8 @@ canvas {
     user-select: none;
     cursor: all-scroll;
 }
+
+nav {
+    position: relative;
+    z-index: 1;
+}
