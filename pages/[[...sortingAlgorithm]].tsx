@@ -11,6 +11,10 @@ import { useRouter } from 'next/router'
 import { mapRange } from '../lib/utils'
 
 
+/** Array of boxes to be sorted */
+const boxes: Mesh<BoxGeometry, MeshBasicMaterial>[ ] = [ ]
+
+
 function Home () {
 
     const router = useRouter()
@@ -20,11 +24,6 @@ function Home () {
     // Don't run three.js code on server
     if (process.browser) {
         let renderer: WebGLRenderer
-
-        /** Array of boxes to be sorted */
-        const boxes: Mesh[ ] = [
-            
-        ]
 
         // onMount - create WebGL context and 3D world
         useEffect(function onMount () {
@@ -37,6 +36,8 @@ function Home () {
 
             // Axes Helper
             // scene.add(new AxesHelper(100))
+
+            // *********TODO: Initialize the boxes already sorted in order
 
             // Generate 10 boxes of varying height
             const boxCount = 20
@@ -142,13 +143,23 @@ function Home () {
 
         // onRouteChange - use the sorting algorithm specified in the route
         useEffect(function onRouteChange () {
+            const sortingAlgorithm = router.asPath.split('/')[ 1 ]
 
+            if (sortingAlgorithm in sortingAlgorithms) {
+                // **********TODO: Randomize order of the boxes,
+                // so that it 'resets' and can be sorted again.
+                // Each box needs to be tweened to a new position,
+                // based on total number of boxes.
+                // Put a lil alert in the top right 'Randomizing Order...' when reseting
 
-            // **********TODO: Reset scene, use new sorting 
-            // algorithm based on router.asPath
+                // boxes.map(box => ({
+                //     uuid: box.uuid, 
+                //     height: box.geometry.parameters.height 
+                // }))
 
-
-        }, [ router.pathname ])
+                sortingAlgorithms[ sortingAlgorithm ]( boxes )
+            }
+        }, [ router.asPath ])
         
     }
 
