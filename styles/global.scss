@@ -1,6 +1,9 @@
 :root {
     --PI: 3.14159265358979;
     --PI-radians: 3.14159265358979rad;
+    --sidebar-width: max(15vw, 13rem);
+    --sidebar-offset: calc(var(--sidebar-width) / 1.5);
+    --background-color: #333333;
 }
 
 * {
@@ -11,6 +14,7 @@ html, body {
     padding: 0;
     margin: 0;
     font-family: Helvetica, Arial, sans-serif;
+    background-color: var(--background-color);
 }
 
 a {
@@ -18,21 +22,13 @@ a {
     text-decoration: none;
 }
 
-canvas {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    outline: none;
-    user-select: none;
-    cursor: all-scroll;
-}
+//
 
 nav {
     position: relative;
-    z-index: 1;
-    width: 20rem;
+    z-index: 2;
+    width: var(--sidebar-width);
+    // background-color: pink;
     height: 100vh;
     display: flex;
     flex-flow: column nowrap;
@@ -49,10 +45,11 @@ nav {
         flex-flow: column nowrap;
         align-items: center;
         justify-content: space-between;
+        // background-color: pink;
 
         li {
             flex: 1; // grow full size
-            min-width: 50%;
+            width: 100%;
             height: 100%;
             padding: 2rem 0px;
             display: flex;
@@ -60,6 +57,7 @@ nav {
             justify-content: center;
             align-items: center;
             transition: transform 350ms ease;
+            // background-color: red;
 
             a {
                 position: relative;
@@ -68,7 +66,7 @@ nav {
                 color: white;
                 font-size: 1.25rem;
                 text-decoration: none;
-                text-shadow: 0px 0px 60px white;
+                text-shadow: 0px 0px 20px rgba(255,255,255, 0.5);
                 // border: solid 1px red; // for debugging 
 
                 display: flex;
@@ -80,13 +78,14 @@ nav {
                     content: '';
                     position: absolute;
                     bottom: 0%; left: 0;
-                    filter: hue-rotate( var(--PI-radians) );
+                    // filter: hue-rotate( var(--PI-radians) );
+                    filter: brightness(5.0);
                     background: url('https://offten.xyz/img/brush-underlines/brush01.png');
                     background-size: contain;
                     background-repeat: no-repeat;
                     transform-origin: 50% 50%;
-                    transform: translate(8%, 80%) rotate(-5deg);
-                    width: 90%;
+                    transform: translate(37%, 80%) rotate(-5deg);
+                    width: 60%;
                     height: 100%;
                     opacity: 0;
                     transition: opacity 100ms ease-out;
@@ -99,4 +98,27 @@ nav {
             }
         }
     }
+}
+
+.nav-shadow {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: var(--sidebar-offset);
+    height: 100vh;
+    // background-color: aqua;
+    box-shadow: 85px 0px 70px var(--background-color);
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    right: 0;
+    // Full width - half the sidebar width
+    max-width: calc(100vw - var(--sidebar-offset));
+    outline: none;
+    user-select: none;
+    cursor: all-scroll;
 }

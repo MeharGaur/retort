@@ -1,13 +1,14 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
 
-import { BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
+import { AxesHelper, BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { useEffect, useRef } from 'react'
 
 import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
+import { mapRange } from '../lib/utils'
 
 
 function Home () {
@@ -20,6 +21,11 @@ function Home () {
     if (process.browser) {
         let renderer: WebGLRenderer
 
+        /** Array of boxes to be sorted */
+        const boxes: Mesh[ ] = [
+            
+        ]
+
         // onMount - create WebGL context and 3D world
         useEffect(function onMount () {
             const sizes = { width: 0, height: 0 }
@@ -29,22 +35,39 @@ function Home () {
             // Scene
             const scene = new Scene()
 
-            
-            // ************* TODO: Need to make the class that sorts 
-            // boxes using the algorithm specified in its constructor
+            // Axes Helper
+            // scene.add(new AxesHelper(100))
 
-            const boxes = [
-                // TODO: array of boxes to be sorted.
-                // gets passed to sorting function to mutate cubes.
-            ]
-
-
-            const boxGeometry = new BoxGeometry(1, 1, 1)
+            // Generate 10 boxes of varying height
+            const boxCount = 20
+            const boxWidth = 2
+            const boxGap = 2 * boxWidth
+            const boxMinHeight = 5
+            const boxMaxHeight = 20
+            const boxHeightOffset = boxMaxHeight / 3
             const boxMaterial = new MeshBasicMaterial({ color: 0x00FFFF })
-            const boxMesh = new Mesh(boxGeometry, boxMaterial)
 
-            scene.add(boxMesh)
+            for (let i = 0; i < boxCount; i++) {
+                // Map range to ensure minimum height of 5
+                const randomHeight = mapRange(
+                    0, boxMaxHeight, boxMinHeight, boxMaxHeight, 
+                    Math.random() * boxMaxHeight
+                ) 
 
+                const newBox = new Mesh(
+                    new BoxGeometry(boxWidth, randomHeight, boxWidth),
+                    boxMaterial
+                )
+
+                // Level the boxes y value
+                newBox.position.y = (randomHeight / 2) - boxHeightOffset
+
+                newBox.position.z = ((i - 0.5) - (boxCount / 2)) * boxGap
+
+                boxes.push(newBox)
+
+                scene.add(newBox)
+            }
 
             // ————————— WebGL Boilerplate —————————
 
@@ -67,9 +90,9 @@ function Home () {
 
             // Camera
             const camera = new PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000)
-            camera.position.x = 10
-            camera.position.y = 25
-            camera.position.z = 10
+            camera.position.x = 42
+            camera.position.y = 10
+            camera.position.z = 20
 
             scene.add(camera)
 
@@ -121,7 +144,8 @@ function Home () {
         useEffect(function onRouteChange () {
 
 
-            // *****TODO: Reload scene, use new sorting algorithm based on router.asPath
+            // **********TODO: Reset scene, use new sorting 
+            // algorithm based on router.asPath
 
 
         }, [ router.pathname ])
@@ -139,7 +163,9 @@ function Home () {
 
             <Navigation />
 
-            <canvas ref={canvasRef} ></canvas>
+            <div className="nav-shadow" />
+
+            <canvas ref={canvasRef} />
 
         </div>
     )

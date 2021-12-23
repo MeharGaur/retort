@@ -82,6 +82,8 @@ function handleMouseOver (e) {
             const indexDifference = index - targetIndex
 
             // Distance from target going from 0 - 1
+            // TODO: This would look better as a spherical 
+            // lerp rather than regular linear interpolation
             const distanceFromTarget = 
                 1.0 - (Math.abs(indexDifference) / navItems.length)
             
