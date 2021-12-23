@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react'
 
 import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
+import { useRouter } from 'next/router'
 
 
 // *****TODO: put data-sorting-algorithm="" attribute on nav items
@@ -15,14 +16,16 @@ import Navigation from '../lib/components/Navigation'
 
 function Home () {
 
+    const router = useRouter()
+
     const canvasRef = useRef<HTMLCanvasElement>()
-    let renderer: WebGLRenderer
 
     // Don't run three.js code on server
     if (process.browser) {
+        let renderer: WebGLRenderer
 
-        // onMount
-        useEffect(() => {
+        // onMount - create WebGL context and 3D world
+        useEffect(function onMount () {
             const sizes = { width: 0, height: 0 }
 
             // ————————— 3D World —————————
@@ -106,9 +109,9 @@ function Home () {
             render()
         }, [ ])
 
-        // Get rid of the WebGL context onDestroy
-        useEffect(() => {
-            return function onDestroy() {
+        // onDestroy - get rid of the WebGL context 
+        useEffect(function onDestroy () {
+            return () => {
                 canvasRef.current = undefined
                 renderer.dispose()
 
@@ -117,6 +120,11 @@ function Home () {
                     .loseContext()
             } 
         }, [ ])
+
+        // onRouteChange - use the sorting algorithm specified in the route
+        useEffect(function onRouteChange () {
+            // TODO: Reload scene, use new sorting algorithm
+        }, [ router.pathname ])
         
     }
 

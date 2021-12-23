@@ -1,20 +1,24 @@
 import { MutableRefObject, useRef } from "react"
+import Link from "next/link"
 
 import { mapRange } from 'gsap'
+import { useRouter } from "next/router"
 
 
 const navItems = [
-    { propertyName: 'bubbleSort', displayName: 'Bubble Sort' },
-    { propertyName: 'insertionSort', displayName: 'Insertion Sort' },
-    { propertyName: 'mergeSort', displayName: 'Merge Sort' },
-    { propertyName: 'quickSort', displayName: 'Quick Sort' },
-    { propertyName: 'radixSort', displayName: 'Radix Sort' },
-    { propertyName: 'selectionSort', displayName: 'Selection Sort' },
+    { path: '/bubbleSort', propertyName: 'bubbleSort', displayName: 'Bubble Sort' },
+    { path: '/insertionSort', propertyName: 'insertionSort', displayName: 'Insertion Sort' },
+    { path: '/mergeSort', propertyName: 'mergeSort', displayName: 'Merge Sort' },
+    { path: '/quickSort', propertyName: 'quickSort', displayName: 'Quick Sort' },
+    { path: '/radixSort', propertyName: 'radixSort', displayName: 'Radix Sort' },
+    { path: '/selectionSort', propertyName: 'selectionSort', displayName: 'Selection Sort' },
 ]
 
 let listRef: MutableRefObject<HTMLUListElement>
 
 function Navigation () {
+
+    const router = useRouter()
 
     listRef = useRef<HTMLUListElement>()
 
@@ -23,14 +27,29 @@ function Navigation () {
             <ul ref={ listRef }>
                 {
                     navItems.map(( item, index ) => (
-                        // onMouseOver={ handleMouseOver }
-                        <li  key={ index }>{ item.displayName }</li>
+                        <li
+                            data-index={ index } 
+                            className={ router.pathname == item.path ? 'active' : '' }
+                            key={ index }
+                        >
+                            <Link href={ item.path }>
+                                { item.displayName }
+                            </Link> 
+                        </li>
                     ))
                 }
             </ul>
         </nav>
     )
 }
+
+
+
+// **********TODO: implement the rest of nav menu animation
+// Also hook up nav selection to the right sorting algorithm
+// ^^^ means i need to put <a></a> tags inside the <li></li> like I did with offten
+// Should store which algorithm is being used as a URL param, react to url changes?
+
 
 
 function handleMouseOver (e) {
