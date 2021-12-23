@@ -1,3 +1,8 @@
+:root {
+    --PI: 3.14159265358979;
+    --PI-radians: 3.14159265358979rad;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -27,4 +32,71 @@ canvas {
 nav {
     position: relative;
     z-index: 1;
+    width: 20rem;
+    height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 80vh;
+        width: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        justify-content: space-between;
+
+        li {
+            flex: 1; // grow full size
+            min-width: 50%;
+            height: 100%;
+            padding: 2rem 0px;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            transition: transform 350ms ease;
+
+            a {
+                position: relative;
+                height: 100%;
+                width: 100%;
+                color: white;
+                font-size: 1.25rem;
+                text-decoration: none;
+                text-shadow: 0px 0px 60px white;
+                // border: solid 1px red; // for debugging 
+
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                align-items: center;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0%; left: 0;
+                    filter: hue-rotate( var(--PI-radians) );
+                    background: url('https://offten.xyz/img/brush-underlines/brush01.png');
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    transform-origin: 50% 50%;
+                    transform: translate(8%, 80%) rotate(-5deg);
+                    width: 90%;
+                    height: 100%;
+                    opacity: 0;
+                    transition: opacity 100ms ease-out;
+                }
+
+                &.active::after {
+                    opacity: 0.75;
+                    transition: opacity 300ms ease;
+                }
+            }
+        }
+    }
 }

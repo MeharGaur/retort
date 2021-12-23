@@ -1,8 +1,8 @@
-import { MutableRefObject, useRef } from "react"
+import { MutableRefObject, useEffect, useRef } from "react"
 import Link from "next/link"
 
-import { mapRange } from 'gsap'
 import { useRouter } from "next/router"
+import { mapRange } from "../utils"
 
 
 const navItems = [
@@ -14,13 +14,31 @@ const navItems = [
     { path: '/selectionSort', propertyName: 'selectionSort', displayName: 'Selection Sort' },
 ]
 
+let outAnimationDelay = 0
+
 let listRef: MutableRefObject<HTMLUListElement>
 
-function Navigation () {
+let liElements: HTMLLIElement[ ]
 
+
+function Navigation () {
     const router = useRouter()
 
     listRef = useRef<HTMLUListElement>()
+
+    // onMount
+    useEffect(function onMount () {
+        liElements = [
+            ...listRef.current.children as HTMLCollectionOf<HTMLLIElement>
+        ]
+
+        for (const li of liElements) {
+            li.addEventListener('mouseover', handleMouseOver)
+            li.addEventListener('mouseout', handleMouseOut)
+        }
+
+        listRef.current.addEventListener('mouseout', handleMouseOut)
+    }, [ ])
 
     return (
         <nav>
@@ -28,12 +46,13 @@ function Navigation () {
                 {
                     navItems.map(( item, index ) => (
                         <li
-                            data-index={ index } 
-                            className={ router.pathname == item.path ? 'active' : '' }
+                            data-index={ index }
                             key={ index }
                         >
                             <Link href={ item.path }>
-                                { item.displayName }
+                                <a draggable="false" className={ router.asPath == item.path ? 'active' : '' }>
+                                    { item.displayName }
+                                </a>
                             </Link> 
                         </li>
                     ))
@@ -44,33 +63,27 @@ function Navigation () {
 }
 
 
-
-// **********TODO: implement the rest of nav menu animation
-// Also hook up nav selection to the right sorting algorithm
-// ^^^ means i need to put <a></a> tags inside the <li></li> like I did with offten
-// Should store which algorithm is being used as a URL param, react to url changes?
-
-
-
 function handleMouseOver (e) {
-    // clearTimeout(outDelay)
+    // Clear any previous out animation delay.
+    // Needed for if a user puts their mouse on the list, moves it off, then 
+    // moves it back on before the delay is over. Need to clear in this case.
+    clearTimeout(outAnimationDelay)
     
-    const targetIndex: number = e.currentTarget.getAttribute('data-index')
+    const targetIndex: number = Number(
+        e.currentTarget.getAttribute('data-index')
+    )
 
-    const navElements = [
-        ...listRef.current.children as HTMLCollectionOf<HTMLLIElement>
-    ]
-
-    for (const [ index, li ] of navElements.entries()) {
-
+    for (const [ index, li ] of liElements.entries()) {
         if (index == targetIndex) {
             li.style.transform = `scale(1.5)`
         } 
+
         else {
             const indexDifference = index - targetIndex
 
+            // Distance from target going from 0 - 1
             const distanceFromTarget = 
-                1.0 - Math.abs(indexDifference) / navItems.length
+                1.0 - (Math.abs(indexDifference) / navItems.length)
             
             li.style.transform = `
                 scale(${
@@ -82,11 +95,20 @@ function handleMouseOver (e) {
                 }px)
             `
         }
-
     }
-
 }
 
+function handleMouseOut(e) {
+    if (!e.currentTarget.parentElement.matches(':hover')) {
+        outAnimationDelay = Number( setTimeout(collapseAllItems, 100) )
+    }
+}
+
+function collapseAllItems() {
+    for (const li of liElements) {
+        li.style.transform = `scale(1.0) translateY(0px)`
+    }
+}
 
 
 export default Navigation 

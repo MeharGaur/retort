@@ -10,10 +10,6 @@ import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
 
 
-// *****TODO: put data-sorting-algorithm="" attribute on nav items
-
-
-
 function Home () {
 
     const router = useRouter()
@@ -123,7 +119,11 @@ function Home () {
 
         // onRouteChange - use the sorting algorithm specified in the route
         useEffect(function onRouteChange () {
-            // TODO: Reload scene, use new sorting algorithm
+
+
+            // *****TODO: Reload scene, use new sorting algorithm based on router.asPath
+
+
         }, [ router.pathname ])
         
     }
