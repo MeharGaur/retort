@@ -1,6 +1,6 @@
-import type { BoxGeometry, Mesh, MeshBasicMaterial } from "three"
+import type { Box } from "../types"
 
-function getHeight (box: Mesh<BoxGeometry, MeshBasicMaterial>) {
+function getHeight (box: Box) {
     return box.geometry.parameters.height
 }
 

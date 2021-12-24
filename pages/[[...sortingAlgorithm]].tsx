@@ -10,10 +10,11 @@ import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
 import { mapRange } from '../lib/utils'
 import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_WIDTH, RESTING_COLOR } from '../lib/config'
+import type { Box } from '../lib/types'
 
 
 /** Array of boxes to be sorted */
-const boxes: Mesh<BoxGeometry, MeshBasicMaterial>[ ] = [ ]
+const boxes: Box[ ] = [ ]
 
 
 function Home () {
