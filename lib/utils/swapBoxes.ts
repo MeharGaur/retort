@@ -11,6 +11,10 @@ async function swapBoxes (
     leftBox: Box, 
     rightBox: Box
 ) {
+
+    // *****
+    // TODO: Need to fade the color change so it's not so abrupt
+
     leftBox.material.color.setHex(SWAP_LEFT_COLOR)
     rightBox.material.color.setHex(SWAP_RIGHT_COLOR)
 
