@@ -38,15 +38,24 @@ function Home () {
             // Axes Helper
             // scene.add(new AxesHelper(100))
 
-            // *********TODO: Initialize the boxes already sorted in order
+            const randomHeights = [ ]
 
-            // Generate 10 boxes of varying height
             for (let i = 0; i < BOX_COUNT; i++) {
-                // Map range to ensure minimum height of 5
-                const randomHeight = mapRange(
-                    0, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_MAX_HEIGHT, 
-                    Math.random() * BOX_MAX_HEIGHT
-                ) 
+                randomHeights.push(
+                    // Map range to ensure minimum height of 5
+                    mapRange(
+                        0, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_MAX_HEIGHT, 
+                        Math.random() * BOX_MAX_HEIGHT
+                    ) 
+                )
+            }
+
+            // Initialize the boxes as sorted by default
+            randomHeights.sort((a, b) => b - a)
+
+            // Generate boxes of varying height
+            for (let i = 0; i < BOX_COUNT; i++) {
+                const randomHeight = randomHeights[ i ]
 
                 const newBox = new Mesh(
                     new BoxGeometry(BOX_WIDTH, randomHeight, BOX_WIDTH),
