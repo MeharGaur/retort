@@ -1,14 +1,13 @@
 import { gsap } from "gsap"
 import type { Box } from "../types"
 import delay from "./delay"
+import getBoxPositions from "./getBoxPositions"
 
 
 /** Stagger dance animation when finished sorting */
 async function staggerBoxes (boxes: Box[ ]) {
-    
-    const boxPositions = boxes.map(box => box.position)
 
-    for (const boxPosition of boxPositions) {
+    for (const boxPosition of getBoxPositions(boxes)) {
         gsap.timeline()
             .to(boxPosition, {
                 y: '+=5',

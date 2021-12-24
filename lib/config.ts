@@ -17,6 +17,9 @@ const SWAP_ANIMATION = {
 /** Milliseconds to wait between iterations/steps in sorting algorithms */
 const STEP_DELAY = 300
 
+/** The animation duration for resetting/randomizing the boxes */
+const RESET_ANIMATION_DURATION = 1
+
 export {
     BOX_COUNT,
     BOX_WIDTH,
@@ -29,5 +32,7 @@ export {
     SWAP_LEFT_COLOR,
     SWAP_RIGHT_COLOR,
     STEP_DELAY,
-    SWAP_ANIMATION
+    SWAP_ANIMATION,
+
+    RESET_ANIMATION_DURATION
 }

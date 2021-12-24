@@ -1,19 +1,20 @@
 import Head from 'next/head'
+import { useEffect, useRef } from 'react'
 
 import { AxesHelper, BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
 
 import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
-import { mapRange } from '../lib/utils'
-import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_WIDTH, RESTING_COLOR } from '../lib/config'
+import { delay, getBoxPositions, mapRange, shuffle } from '../lib/utils'
+import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_WIDTH, RESET_ANIMATION_DURATION, RESTING_COLOR, STEP_DELAY } from '../lib/config'
 import type { Box } from '../lib/types'
 
 
 /** Array of boxes to be sorted */
-const boxes: Box[ ] = [ ]
+let boxes: Box[ ] = [ ]
 
 
 function Home () {
@@ -136,26 +137,61 @@ function Home () {
             } 
         }, [ ])
 
-        // onRouteChange - use the sorting algorithm specified in the route
+        // onRouteChange - Reset/randomize the box order and sort using 
+        // the new algorithm specified in the route param.
         useEffect(function onRouteChange () {
             const sortingAlgorithm = router.asPath.split('/')[ 1 ]
 
             if (sortingAlgorithm in sortingAlgorithms) {
-                // **********TODO: Randomize order of the boxes,
-                // so that it 'resets' and can be sorted again.
-                // Each box needs to be tweened to a new position,
-                // based on total number of boxes.
-                // Put a lil alert in the top right 'Randomizing Order...' when reseting
+                // Create range from 1 to BOX_COUNT then shuffle it
+                const randomizedIndices = shuffle([
+                    ...Array(BOX_COUNT).keys()
+                ])
 
-                // boxes.map(box => ({
-                //     uuid: box.uuid, 
-                //     height: box.geometry.parameters.height 
-                // }))
+                // New array to hold a randomized version of the boxes array
+                const newBoxes: Box[ ] = [ ]
 
-                sortingAlgorithms[ sortingAlgorithm ]( boxes )
+                for (let i = 0; i < BOX_COUNT; i++) {
+                    newBoxes[ randomizedIndices[ i ] ] = boxes[ i ]
+
+                    // Tween each box to its new position
+                    gsap.to(boxes[ i ].position, {
+                        z: boxes[ randomizedIndices[ i ] ].position.z,
+                        duration: RESET_ANIMATION_DURATION,
+                        ease: 'power2.inOut'
+                    })
+                }
+
+                // Use the randomized array instead of the sorted one
+                boxes = newBoxes
+
+                // Wait for randomization tween to finish playing
+                setTimeout(
+                    async () => {
+                        const boxPositions = getBoxPositions(boxes)
+
+                        // Make the boxes do a 'jump' to indicate sorting is about to start
+                        await gsap.timeline()
+                            .to(boxPositions, {
+                                y: '+=3',
+                                ease: 'power2.out',
+                                duration: 0.3
+                            })
+                            .to(boxPositions, {
+                                y: '-=3',
+                                ease: 'power2.in',
+                                duration: 0.25
+                            })
+
+                        await delay(STEP_DELAY)
+
+                        // Run the actual sorting algorithm
+                        sortingAlgorithms[ sortingAlgorithm ]( boxes )
+                    }, 
+                    RESET_ANIMATION_DURATION * 1_000
+                )
             }
         }, [ router.asPath ])
-        
     }
 
     // Render HTML
