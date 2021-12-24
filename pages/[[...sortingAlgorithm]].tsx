@@ -9,6 +9,7 @@ import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
 import { mapRange } from '../lib/utils'
+import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_WIDTH, RESTING_COLOR } from '../lib/config'
 
 
 /** Array of boxes to be sorted */
@@ -40,35 +41,30 @@ function Home () {
             // *********TODO: Initialize the boxes already sorted in order
 
             // Generate 10 boxes of varying height
-            const boxCount = 20
-            const boxWidth = 2
-            const boxGap = 2 * boxWidth
-            const boxMinHeight = 5
-            const boxMaxHeight = 20
-            const boxHeightOffset = boxMaxHeight / 3
-            const boxMaterial = new MeshBasicMaterial({ color: 0x00FFFF })
-
-            for (let i = 0; i < boxCount; i++) {
+            for (let i = 0; i < BOX_COUNT; i++) {
                 // Map range to ensure minimum height of 5
                 const randomHeight = mapRange(
-                    0, boxMaxHeight, boxMinHeight, boxMaxHeight, 
-                    Math.random() * boxMaxHeight
+                    0, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_MAX_HEIGHT, 
+                    Math.random() * BOX_MAX_HEIGHT
                 ) 
 
                 const newBox = new Mesh(
-                    new BoxGeometry(boxWidth, randomHeight, boxWidth),
-                    boxMaterial
+                    new BoxGeometry(BOX_WIDTH, randomHeight, BOX_WIDTH),
+                    new MeshBasicMaterial({ color: RESTING_COLOR })
                 )
 
                 // Level the boxes y value
-                newBox.position.y = (randomHeight / 2) - boxHeightOffset
+                newBox.position.y = (randomHeight / 2) - BOX_HEIGHT_OFFSET
 
-                newBox.position.z = ((i - 0.5) - (boxCount / 2)) * boxGap
+                newBox.position.z = ((i - 0.5) - (BOX_COUNT / 2)) * BOX_GAP
 
                 boxes.push(newBox)
 
                 scene.add(newBox)
             }
+
+            // Reverse the array so it sorts starting from other side
+            boxes.reverse()
 
             // ————————— WebGL Boilerplate —————————
 
