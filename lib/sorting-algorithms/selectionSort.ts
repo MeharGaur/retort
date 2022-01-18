@@ -18,16 +18,16 @@ async function selectionSort (boxes: Box[ ]) {
         if (minimumIndex != i) {
             // Swap minimum with first unsorted position. "Move" to the front
             swapBoxes(boxes, i, minimumIndex)
-        }
 
-        // Reset boxes back to resting color
-        await resetBoxes(boxes[i], boxes[minimumIndex])
+            // Reset boxes back to resting color
+            await resetBoxes(boxes[i], boxes[minimumIndex])
+        }
     }
 
     await delay(STEP_DELAY)
 
     // Make the boxes "dance" on complete
-    staggerBoxes(boxes)
+    await staggerBoxes(boxes)
 }
 
 

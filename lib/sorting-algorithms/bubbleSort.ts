@@ -28,7 +28,7 @@ async function bubbleSort (boxes: Box[ ]) {
     await delay(STEP_DELAY)
 
     // Make the boxes "dance" on complete
-    staggerBoxes(boxes)
+    await staggerBoxes(boxes)
 }
 
 
