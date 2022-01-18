@@ -7,10 +7,11 @@ import delay from "./delay"
 
 async function swapBoxes (
     boxes: Box[ ], 
-    index: number, 
-    leftBox: Box, 
-    rightBox: Box
+    leftIndex: number, 
+    rightIndex: number
 ) {
+    const leftBox = boxes[leftIndex]
+    const rightBox = boxes[rightIndex]
 
     // *****
     // TODO: Need to fade the color change so it's not so abrupt
@@ -36,8 +37,9 @@ async function swapBoxes (
         ...SWAP_ANIMATION
     })
 
-    boxes[ index ] = rightBox
-    boxes[ index + 1 ] = leftBox
+    const tmp = boxes[leftIndex]
+    boxes[leftIndex] = boxes[rightIndex]
+    boxes[rightIndex] = tmp
 }
 
 

@@ -5,6 +5,7 @@ import mapRange from "./mapRange";
 import shuffle from "./shuffle";
 import staggerBoxes from "./staggerBoxes";
 import swapBoxes from "./swapBoxes";
+import resetBoxes from "./resetBoxes";
 
 
 export {
@@ -14,5 +15,6 @@ export {
     mapRange,
     shuffle,
     staggerBoxes,
-    swapBoxes
+    swapBoxes,
+    resetBoxes as delayBoxes
 }

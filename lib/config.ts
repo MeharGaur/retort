@@ -7,8 +7,8 @@ const BOX_HEIGHT_OFFSET = BOX_MAX_HEIGHT / 3
 
 const RESTING_COLOR = 0x00FFFF
 
-const SWAP_LEFT_COLOR = 0xFF00FF
-const SWAP_RIGHT_COLOR = 0xFFFF00
+const SWAP_LEFT_COLOR = 0xFF00FF // pink
+const SWAP_RIGHT_COLOR = 0xFFFF00 // yellow
 
 const SWAP_ANIMATION = {
     duration: 0.3

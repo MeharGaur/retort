@@ -6,6 +6,10 @@ import radixSort from "./radixSort";
 import selectionSort from "./selectionSort";
 
 
+// TODO:
+// Need to reset the boxes when switching to another algorithm in the middle of the current one playing
+
+
 export default {
     bubbleSort,
     insertionSort,
