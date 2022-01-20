@@ -7,6 +7,7 @@ import staggerBoxes from "./staggerBoxes";
 import swapBoxes from "./swapBoxes";
 import resetBoxes from "./resetBoxes";
 import calculateBoxPosition from "./calculateBoxPosition";
+import syncBoxPositions from "./syncBoxPositions";
 
 
 export {
@@ -18,5 +19,6 @@ export {
     staggerBoxes,
     swapBoxes,
     resetBoxes,
-    calculateBoxPosition
+    calculateBoxPosition,
+    syncBoxPositions
 }

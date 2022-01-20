@@ -1,7 +1,6 @@
-import { BOX_MAX_HEIGHT, RESET_ANIMATION_DURATION, STEP_DELAY } from "../config"
-import { calculateBoxPosition, delay, getHeight, staggerBoxes } from "../utils"
+import { BOX_MAX_HEIGHT, STEP_DELAY } from "../config"
+import { delay, getHeight, staggerBoxes, syncBoxPositions } from "../utils"
 import type { Box } from "../types"
-import { gsap } from "gsap"
 
 
 async function radixSort (boxes: Box[ ]) {
@@ -45,17 +44,8 @@ async function radixSort (boxes: Box[ ]) {
 
     await delay(STEP_DELAY)
 
-    // Need to animate the boxes to their new positions.
-    for (let i = 0; i < boxes.length; i++) {
-        // Tween each box to its new position, also reverse index so it appears in ascending order
-        gsap.to(boxes[ (boxes.length -  1) - i ].position, {
-            z: calculateBoxPosition(i),
-            duration: RESET_ANIMATION_DURATION,
-            ease: 'power2.inOut'
-        })
-    }
-
-    await delay(RESET_ANIMATION_DURATION * 1_000)
+    // Animate the boxes to their new positions
+    await syncBoxPositions(boxes)
 
     await delay(STEP_DELAY)
 

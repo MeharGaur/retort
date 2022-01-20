@@ -1,4 +1,4 @@
-import { Box } from "../types";
+import type { Box } from "../types";
 
 
 function getBoxPositions (boxes: Box[ ]) {
