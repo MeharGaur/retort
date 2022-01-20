@@ -1,5 +1,5 @@
 import { STEP_DELAY } from "../config"
-import { getHeight, delay, staggerBoxes, swapBoxes, delayBoxes } from "../utils"
+import { getHeight, delay, staggerBoxes, swapBoxes, resetBoxes } from "../utils"
 import type { Box } from "../types"
 
 
@@ -20,7 +20,7 @@ async function bubbleSort (boxes: Box[ ]) {
                 didSwap = true
 
                 // Reset boxes back to resting color
-                await delayBoxes(leftBox, rightBox)
+                await resetBoxes(leftBox, rightBox)
             }
         }
     } while (didSwap)

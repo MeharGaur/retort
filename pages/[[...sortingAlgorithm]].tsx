@@ -16,6 +16,8 @@ import type { Box } from '../lib/types'
 /** Array of boxes to be sorted */
 let boxes: Box[ ] = [ ]
 
+const routeTimestamps: number[ ] = [ ]
+
 
 function Home () {
     const router = useRouter()
@@ -25,7 +27,6 @@ function Home () {
     // Don't run three.js code on server
     if (process.browser) {
         let renderer: WebGLRenderer
-        let scene: Scene
 
         // onMount - create WebGL context and 3D world
         useEffect(function onMount () {
@@ -34,32 +35,12 @@ function Home () {
             // ————————— 3D World —————————
 
             // Scene
-            scene = new Scene()
+            const scene = new Scene()
 
             // Axes Helper
             // scene.add(new AxesHelper(100))
 
-            // Generate boxes of varying height in ascending order
-            for (let i = 0; i < BOX_COUNT; i++) {
-                const boxHeight = (BOX_COUNT - i) + 5
-
-                const newBox = new Mesh(
-                    new BoxGeometry(BOX_WIDTH, boxHeight, BOX_WIDTH),
-                    new MeshBasicMaterial({ color: RESTING_COLOR })
-                )
-
-                // Level the boxes y value
-                newBox.position.y = (boxHeight / 2) - BOX_HEIGHT_OFFSET
-
-                newBox.position.z = calculateBoxPosition(i)
-
-                boxes.push(newBox)
-
-                scene.add(newBox)
-            }
-
-            // Reverse boxes array so it in appears ascending order in the WebGL scene
-            boxes.reverse()
+            generateBoxes(scene)
 
             // ————————— WebGL Boilerplate —————————
 
@@ -140,6 +121,21 @@ function Home () {
                 const sortingAlgorithm = router.asPath.split('/')[ 1 ]
 
                 if (sortingAlgorithm in sortingAlgorithms) {
+                    // Timestamp of when route changed
+                    const currentTimestamp = Date.now()
+
+                    routeTimestamps.push(currentTimestamp)
+
+                    // Get the scene object from one of the box's
+                    const scene = boxes[0].parent as Scene
+
+                    scene.remove(...boxes)
+                    
+                    boxes = [ ]
+
+                    // Regenerate all boxes in case any sorting function is currently running
+                    generateBoxes(scene)
+
                     // Create range from 1 to BOX_COUNT then shuffle it
                     const randomizedIndices = shuffle([
                         ...Array(BOX_COUNT).keys()
@@ -149,22 +145,11 @@ function Home () {
                     const newBoxes: Box[ ] = [ ]
 
                     for (let i = 0; i < BOX_COUNT; i++) {
-                        const newIndex = randomizedIndices[ i ]
-
-                        newBoxes[i] = new Mesh(
-                            boxes[i].geometry,
-                            boxes[i].material
-                        )
-
-                        newBoxes[i].position.copy(boxes[i].position)
-                        
-                        // scene.add(newBoxes[i])
-
-                        boxes[i].parent = null
+                        newBoxes[ randomizedIndices[ i ] ] = boxes[ i ]
 
                         // Tween each box to its new position
-                        gsap.to(newBoxes[ i ].position, {
-                            z: boxes[ newIndex ].position.z,
+                        gsap.to(boxes[ i ].position, {
+                            z: boxes[ randomizedIndices[ i ] ].position.z,
                             duration: RESET_ANIMATION_DURATION,
                             ease: 'power2.inOut'
                         })
@@ -192,9 +177,8 @@ function Home () {
                         })
 
                     await delay(STEP_DELAY)
-
-                    // Run the actual sorting algorithm
-                    sortingAlgorithms[ sortingAlgorithm ]( boxes )
+                    
+                    sortingAlgorithms[sortingAlgorithm](boxes)
                 }
             })()
         }, [ router.asPath ])
@@ -217,6 +201,31 @@ function Home () {
 
         </div>
     )
+}
+
+
+function generateBoxes (scene: Scene) {
+    // Generate boxes of varying height in ascending order
+    for (let i = 0; i < BOX_COUNT; i++) {
+        const boxHeight = (BOX_COUNT - i) + 5
+
+        const newBox = new Mesh(
+            new BoxGeometry(BOX_WIDTH, boxHeight, BOX_WIDTH),
+            new MeshBasicMaterial({ color: RESTING_COLOR })
+        )
+
+        // Level the boxes y value
+        newBox.position.y = (boxHeight / 2) - BOX_HEIGHT_OFFSET
+
+        newBox.position.z = calculateBoxPosition(i)
+
+        boxes.push(newBox)
+
+        scene.add(newBox)
+    }
+
+    // Reverse boxes array so it in appears ascending order in the WebGL scene
+    boxes.reverse()
 }
 
 
