@@ -1,10 +1,3 @@
-
-// ****** TODO: don;t worry about visualizing the recursion
-// Do the same thing I did with radix sort,
-// just sort it and then tween all cubes to new position
-// ^^^ extract that part into a util function cause i'll 
-// use it in quick sort as well
-
 import { STEP_DELAY } from "../config"
 import type { Box } from "../types"
 import { delay, getHeight, staggerBoxes, syncBoxPositions } from "../utils"
