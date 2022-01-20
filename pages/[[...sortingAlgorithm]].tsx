@@ -8,7 +8,7 @@ import { gsap } from 'gsap'
 import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
-import { delay, getBoxPositions, shuffle } from '../lib/utils'
+import { calculateBoxPosition, delay, getBoxPositions, shuffle } from '../lib/utils'
 import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_WIDTH, RESET_ANIMATION_DURATION, RESTING_COLOR, STEP_DELAY } from '../lib/config'
 import type { Box } from '../lib/types'
 
@@ -50,14 +50,14 @@ function Home () {
                 // Level the boxes y value
                 newBox.position.y = (boxHeight / 2) - BOX_HEIGHT_OFFSET
 
-                newBox.position.z = ((i - 0.5) - (BOX_COUNT / 2)) * BOX_GAP
+                newBox.position.z = calculateBoxPosition(i)
 
                 boxes.push(newBox)
 
                 scene.add(newBox)
             }
 
-            // Reverse the array so it sorts in ascending order
+            // // Reverse boxes array so it in appears ascending order in the WebGL scene
             boxes.reverse()
 
             // ————————— WebGL Boilerplate —————————

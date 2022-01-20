@@ -6,6 +6,7 @@ import shuffle from "./shuffle";
 import staggerBoxes from "./staggerBoxes";
 import swapBoxes from "./swapBoxes";
 import resetBoxes from "./resetBoxes";
+import calculateBoxPosition from "./calculateBoxPosition";
 
 
 export {
@@ -16,5 +17,6 @@ export {
     shuffle,
     staggerBoxes,
     swapBoxes,
-    resetBoxes as delayBoxes
+    resetBoxes,
+    calculateBoxPosition
 }
