@@ -18,6 +18,11 @@ async function mergeSort (boxes: Box[ ]) {
 
     await delay(STEP_DELAY)
 
+    // Animate the boxes to their new positions.
+    await syncBoxPositions(boxes)
+
+    await delay(STEP_DELAY)
+
     // Make the boxes "dance" on complete
     await staggerBoxes(boxes)
 }
