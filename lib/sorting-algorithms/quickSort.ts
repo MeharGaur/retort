@@ -9,7 +9,15 @@ async function quickSort(boxes: Box[ ]) {
     boxes.length = 0
     boxes.push(...sortedBoxes)
 
-    
+    await delay(STEP_DELAY)
+
+    // Animate the boxes to their new positions.
+    await syncBoxPositions(boxes)
+
+    await delay(STEP_DELAY)
+
+    // Make the boxes "dance" on complete
+    await staggerBoxes(boxes)
 }
 
 
@@ -24,14 +32,14 @@ function _quickSort (boxes: Box[ ]) {
     const pivotIndex = boxes.length - 1
     
     const smaller: Box[ ] = [ ] 
-    const larger: Box[ ] = [ ] 
-
-    for (const box of boxes) {
-        if (getHeight(box) < getHeight(boxes[pivotIndex])) {
-            smaller.push(box)
+    const larger: Box[ ] = [ ]
+    
+    for (let i = 0; i < pivotIndex; i++) {
+        if (getHeight(boxes[i]) < getHeight(boxes[pivotIndex])) {
+            smaller.push(boxes[i])
         }
         else {
-            larger.push(box)
+            larger.push(boxes[i])
         }
     }
 
