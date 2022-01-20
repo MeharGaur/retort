@@ -38,32 +38,17 @@ function Home () {
             // Axes Helper
             // scene.add(new AxesHelper(100))
 
-            const randomHeights = [ ]
-
+            // Generate boxes of varying height in ascending order
             for (let i = 0; i < BOX_COUNT; i++) {
-                randomHeights.push(
-                    // Map range to ensure minimum height of 5
-                    mapRange(
-                        0, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_MAX_HEIGHT, 
-                        Math.random() * BOX_MAX_HEIGHT
-                    ) 
-                )
-            }
-
-            // Initialize the boxes as sorted by default
-            randomHeights.sort((a, b) => b - a)
-
-            // Generate boxes of varying height
-            for (let i = 0; i < BOX_COUNT; i++) {
-                const randomHeight = randomHeights[ i ]
+                const boxHeight = (BOX_COUNT - i) + 5
 
                 const newBox = new Mesh(
-                    new BoxGeometry(BOX_WIDTH, randomHeight, BOX_WIDTH),
+                    new BoxGeometry(BOX_WIDTH, boxHeight, BOX_WIDTH),
                     new MeshBasicMaterial({ color: RESTING_COLOR })
                 )
 
                 // Level the boxes y value
-                newBox.position.y = (randomHeight / 2) - BOX_HEIGHT_OFFSET
+                newBox.position.y = (boxHeight / 2) - BOX_HEIGHT_OFFSET
 
                 newBox.position.z = ((i - 0.5) - (BOX_COUNT / 2)) * BOX_GAP
 
@@ -72,7 +57,7 @@ function Home () {
                 scene.add(newBox)
             }
 
-            // Reverse the array so it sorts starting from other side
+            // Reverse the array so it sorts in ascending order
             boxes.reverse()
 
             // ————————— WebGL Boilerplate —————————

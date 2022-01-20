@@ -6,9 +6,10 @@ import radixSort from "./radixSort";
 import selectionSort from "./selectionSort";
 
 
-// ******** TODO:
+// ********** TODO:
 // Need to reset the boxes when switching to another algorithm in the middle of the current one playing
 // ^^^ stop the sorting function and then run the onRouteChange 'randomize' boxes logic
+
 
 export default {
     bubbleSort,
