@@ -1,6 +1,6 @@
 import { STEP_DELAY } from "../config"
-import type { Box } from "../types"
 import { delay, getHeight, staggerBoxes, syncBoxPositions } from "../utils"
+import type { Box } from "../types"
 
 
 async function quickSort(boxes: Box[ ]) {

@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { useEffect, useRef } from 'react'
 
-import { AxesHelper, BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three'
+import { AxesHelper, BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
 
@@ -9,7 +9,7 @@ import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
 import { calculateBoxPosition, delay, getBoxPositions, shuffle } from '../lib/utils'
-import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_WIDTH, RESET_ANIMATION_DURATION, RESTING_COLOR, STEP_DELAY } from '../lib/config'
+import { BOX_COUNT, BOX_HEIGHT_OFFSET, BOX_WIDTH, RESET_ANIMATION_DURATION, RESTING_COLOR, STEP_DELAY } from '../lib/config'
 import type { Box } from '../lib/types'
 
 
@@ -25,6 +25,7 @@ function Home () {
     // Don't run three.js code on server
     if (process.browser) {
         let renderer: WebGLRenderer
+        let scene: Scene
 
         // onMount - create WebGL context and 3D world
         useEffect(function onMount () {
@@ -33,7 +34,7 @@ function Home () {
             // ————————— 3D World —————————
 
             // Scene
-            const scene = new Scene()
+            scene = new Scene()
 
             // Axes Helper
             // scene.add(new AxesHelper(100))
@@ -134,57 +135,68 @@ function Home () {
         // onRouteChange - Reset/randomize the box order and sort using 
         // the new algorithm specified in the route param.
         useEffect(function onRouteChange () {
-            const sortingAlgorithm = router.asPath.split('/')[ 1 ]
+            // Use an async IIFE because React useEffect doesn't allow promise
+            (async () => {
+                const sortingAlgorithm = router.asPath.split('/')[ 1 ]
 
-            if (sortingAlgorithm in sortingAlgorithms) {
-                // Create range from 1 to BOX_COUNT then shuffle it
-                const randomizedIndices = shuffle([
-                    ...Array(BOX_COUNT).keys()
-                ])
+                if (sortingAlgorithm in sortingAlgorithms) {
+                    // Create range from 1 to BOX_COUNT then shuffle it
+                    const randomizedIndices = shuffle([
+                        ...Array(BOX_COUNT).keys()
+                    ])
 
-                // New array to hold a randomized version of the boxes array
-                const newBoxes: Box[ ] = [ ]
+                    // New array to hold a randomized version of the boxes array
+                    const newBoxes: Box[ ] = [ ]
 
-                for (let i = 0; i < BOX_COUNT; i++) {
-                    newBoxes[ randomizedIndices[ i ] ] = boxes[ i ]
+                    for (let i = 0; i < BOX_COUNT; i++) {
+                        const newIndex = randomizedIndices[ i ]
 
-                    // Tween each box to its new position
-                    gsap.to(boxes[ i ].position, {
-                        z: boxes[ randomizedIndices[ i ] ].position.z,
-                        duration: RESET_ANIMATION_DURATION,
-                        ease: 'power2.inOut'
-                    })
+                        newBoxes[i] = new Mesh(
+                            boxes[i].geometry,
+                            boxes[i].material
+                        )
+
+                        newBoxes[i].position.copy(boxes[i].position)
+                        
+                        // scene.add(newBoxes[i])
+
+                        boxes[i].parent = null
+
+                        // Tween each box to its new position
+                        gsap.to(newBoxes[ i ].position, {
+                            z: boxes[ newIndex ].position.z,
+                            duration: RESET_ANIMATION_DURATION,
+                            ease: 'power2.inOut'
+                        })
+                    }
+
+                    // Use the randomized array instead of the sorted one
+                    boxes = newBoxes
+
+                    // Wait for randomization tween to finish playing
+                    await delay(RESET_ANIMATION_DURATION * 1_000)
+
+                    const boxPositions = getBoxPositions(boxes)
+
+                    // Make the boxes do a 'jump' to indicate sorting is about to start
+                    await gsap.timeline()
+                        .to(boxPositions, {
+                            y: '+=3',
+                            ease: 'power2.out',
+                            duration: 0.3
+                        })
+                        .to(boxPositions, {
+                            y: '-=3',
+                            ease: 'power2.in',
+                            duration: 0.25
+                        })
+
+                    await delay(STEP_DELAY)
+
+                    // Run the actual sorting algorithm
+                    sortingAlgorithms[ sortingAlgorithm ]( boxes )
                 }
-
-                // Use the randomized array instead of the sorted one
-                boxes = newBoxes
-
-                // Wait for randomization tween to finish playing
-                setTimeout(
-                    async () => {
-                        const boxPositions = getBoxPositions(boxes)
-
-                        // Make the boxes do a 'jump' to indicate sorting is about to start
-                        await gsap.timeline()
-                            .to(boxPositions, {
-                                y: '+=3',
-                                ease: 'power2.out',
-                                duration: 0.3
-                            })
-                            .to(boxPositions, {
-                                y: '-=3',
-                                ease: 'power2.in',
-                                duration: 0.25
-                            })
-
-                        await delay(STEP_DELAY)
-
-                        // Run the actual sorting algorithm
-                        sortingAlgorithms[ sortingAlgorithm ]( boxes )
-                    }, 
-                    RESET_ANIMATION_DURATION * 1_000
-                )
-            }
+            })()
         }, [ router.asPath ])
     }
 
