@@ -8,7 +8,7 @@ import resetBoxes from "../utils/resetBoxes"
 async function insertionSort (boxes: Box[ ]) {
     // Loop through unsorted elements, assume first is sorted
     for (let i = 1; i < boxes.length; i++) {
-        const currentBoxHeight = boxes[i].geometry.parameters.height
+        const currentBoxHeight = getHeight(boxes[i])
         
         await delay(100)
 

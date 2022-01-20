@@ -8,30 +8,40 @@ async function radixSort (boxes: Box[ ]) {
 
     for (let i = 0; i < 10; i++) buckets.push([ ])
     
-    const totalDigits = BOX_MAX_HEIGHT.toString().length
+    const maxDigits = BOX_MAX_HEIGHT.toString().length
 
     // For each digit
-    for (let i = 0; i < totalDigits; i++) {
+    for (let i = 0; i < maxDigits; i++) {
         // For each box, place it into correct bucket
         for (const box of boxes) {
             // Extracting digits can be done mathematically, using strings for simplicity
-            const bucketIndex = Number(getHeight(box).toString().slice(-1))
+            let height = getHeight(box).toString()
+
+            // Pad number with zeros if less number of digits than maxDigits
+            if (height.length < maxDigits) { 
+                const zeroPaddingPrefix = 
+                    new Array(maxDigits - height.length).fill('0').join('')
+               
+                height = zeroPaddingPrefix + height
+            }
+
+            const bucketIndex = Number(height[ (height.length - 1) - i ])
 
             buckets[bucketIndex].push(box)
         }
         
         boxes = [ ]
-        console.log(buckets)
 
+        // Empty buckets (queues) in first-in-first-out order (keep removing first element)
         for (const bucket of buckets) {
             while (bucket.length) {
-                boxes.push(bucket[bucket.length - 1])
-                bucket.pop()
+                boxes.push(bucket[0])
+                bucket.shift()
             }
         }
     }
 
-    console.log(boxes)
+    // Need to animate the boxes to their new positions.
 
     await delay(STEP_DELAY)
 
