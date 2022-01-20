@@ -44,7 +44,7 @@ async function insertionSort (boxes: Box[ ]) {
 }
 
 
-function moveBox(box: Box, direction: '+' | '-', amount: number) {
+function moveBox (box: Box, direction: '+' | '-', amount: number) {
     return gsap.to(box.position, {
         ease: 'power2.out',
         y: `${ direction }=${ amount }`,

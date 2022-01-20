@@ -57,7 +57,7 @@ function Home () {
                 scene.add(newBox)
             }
 
-            // // Reverse boxes array so it in appears ascending order in the WebGL scene
+            // Reverse boxes array so it in appears ascending order in the WebGL scene
             boxes.reverse()
 
             // ————————— WebGL Boilerplate —————————
