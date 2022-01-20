@@ -8,8 +8,8 @@ import { gsap } from 'gsap'
 import sortingAlgorithms from '../lib/sorting-algorithms'
 import Navigation from '../lib/components/Navigation'
 import { useRouter } from 'next/router'
-import { delay, getBoxPositions, mapRange, shuffle } from '../lib/utils'
-import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_MAX_HEIGHT, BOX_MIN_HEIGHT, BOX_WIDTH, RESET_ANIMATION_DURATION, RESTING_COLOR, STEP_DELAY } from '../lib/config'
+import { delay, getBoxPositions, shuffle } from '../lib/utils'
+import { BOX_COUNT, BOX_GAP, BOX_HEIGHT_OFFSET, BOX_WIDTH, RESET_ANIMATION_DURATION, RESTING_COLOR, STEP_DELAY } from '../lib/config'
 import type { Box } from '../lib/types'
 
 
