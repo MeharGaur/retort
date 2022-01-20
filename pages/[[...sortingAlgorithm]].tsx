@@ -178,7 +178,11 @@ function Home () {
 
                     await delay(STEP_DELAY)
                     
-                    sortingAlgorithms[sortingAlgorithm](boxes)
+                    // Timestamp check, only run the algorithm if it is the most recent selection by the user
+                    if (routeTimestamps[routeTimestamps.length - 1] == currentTimestamp) {
+                        // Run the actual sorting algorithm
+                        sortingAlgorithms[sortingAlgorithm](boxes)
+                    }
                 }
             })()
         }, [ router.asPath ])
